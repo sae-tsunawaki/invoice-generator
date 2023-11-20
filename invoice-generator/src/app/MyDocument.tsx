@@ -65,8 +65,7 @@ export const MyDocument = ({name, date, total, orderList} : Props) => {
           <div className='pr-16'>
             <div>本草閣自然療法センターOSAKA</div>
             <div className='pt-1.5'>〒533-0033 </div>
-            <div>大阪府大阪市東淀川区東中島4-2-5</div>
-            <div className='text-white'>""</div>
+            <div className='pb-2'>大阪府大阪市東淀川区東中島4-2-5</div>
             <div>TEL 080-3352-9660</div>
             <div>honzokaku.osaka@gmail.com</div>
             <div>http://www.honzoosaka2222.com</div>
@@ -85,7 +84,7 @@ export const MyDocument = ({name, date, total, orderList} : Props) => {
             <tbody> 
               {
                 orderList.map((order, index) => (
-                    <tr>
+                    <tr key={index}>
                       <td className='text-left'>{order.name}</td>
                       <td>{order.quantity}</td>
                       <td>{order.ppp.toLocaleString()}</td>

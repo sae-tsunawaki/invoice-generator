@@ -155,7 +155,7 @@ export default function Home() {
             <select onChange={(event) => handleProductChange(event, index)} className='focus:outline-none border border-gray-300 px-2 py-2 w-[77%] rounded-md'>
               {
                 products.map((product, index) => (
-                  <option value={product[0]}>{product[0]}</option>
+                  <option key={index} value={product[0]}>{product[0]}</option>
                 ))
               }
             </select>

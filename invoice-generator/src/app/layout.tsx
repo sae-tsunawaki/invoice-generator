@@ -16,10 +16,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <script type="text/javascript" src="rgbcolor.js"></script>
-        <script type="text/javascript" src="canvg.js"></script>
-      </head>
       <body className={inter.className}>{children}</body>
     </html>
   )
