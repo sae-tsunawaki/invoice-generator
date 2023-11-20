@@ -1,10 +1,10 @@
 export const products = [
-    ['Product A', 20],
-    ['Product B', 100],
-    ['Product C', 55],
-    ['Product D', 30],
-    ['Product E', 15],
-    ['Product F', 80],
+    ['竹目薬', 1200],
+    ['Product B', 200],
+    ['Product C', 300],
+    ['Product D', 400],
+    ['Product E', 500],
+    ['Product F', 600],
 ];
 
 // export const products = {

@@ -1,9 +1,11 @@
 import domtoimage from 'dom-to-image';
 import jsPDF from 'jspdf';
+import { products } from './constants';
 
 type Props = {
   name: string,
   date: any,
+  total: number,
   orderList: any[],
 };
   
@@ -19,7 +21,7 @@ export const pdhDownloadHandler = async () => {
       doc.save('invoice.pdf');
   })
 };
-export const MyDocument = ({name, date, orderList} : Props) => {
+export const MyDocument = ({name, date, total, orderList} : Props) => {
 
   const options = {
     year: 'numeric',
@@ -55,7 +57,7 @@ export const MyDocument = ({name, date, orderList} : Props) => {
                 </div>
               </div>
               <div className='text-xl font-semibold pl-6'>
-                ¥ 149,600
+                ¥ {total.toLocaleString()}
               </div>
             </div>
             <hr className="mx-16 border-[#0d918f] w-[187px] ml-48 -mt-2" />
@@ -75,24 +77,23 @@ export const MyDocument = ({name, date, orderList} : Props) => {
             <thead>
               <tr className='text-white bg-[#0d918f]'>
                 <th className='w-[50%] font-normal'>品名</th>
-                <th className='font-normal'>数量</th>
-                <th className='font-normal'>単価</th>
-                <th className='font-normal'>金額</th>
+                <th className='w-[16%] font-normal'>数量</th>
+                <th className='w-[16%] font-normal'>単価</th>
+                <th className='w-[18%] font-normal'>金額</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td className='text-left'>サンプルA</td>
-                <td>2</td>
-                <td>20,000</td>
-                <td>40,000</td>
-              </tr>
-              <tr>
-                <td className='text-left'>サンプルB</td>
-                <td>3</td>
-                <td>32,000</td>
-                <td>96,000</td>
-              </tr>
+            <tbody> 
+              {
+                orderList.map((order, index) => (
+                    <tr>
+                      <td className='text-left'>{order.name}</td>
+                      <td>{order.quantity}</td>
+                      <td>{order.ppp.toLocaleString()}</td>
+                      <td>{order.price.toLocaleString()}</td>
+                    </tr>
+                  )
+                )
+              }
             </tbody>
           </table>
         </div>
@@ -100,16 +101,16 @@ export const MyDocument = ({name, date, orderList} : Props) => {
           <table className="w-full">
             <tbody>
               <tr>
-                <td className='text-left w-[63.5%]'>小計</td>
-                <td>136,000</td>
+                <td className='text-left w-[64%]'>小計</td>
+                <td>¥{total.toLocaleString()}</td>
               </tr>
               <tr>
                 <td className='text-left'>送料</td>
-                <td>520</td>
+                <td>¥520</td>
               </tr>
               <tr>
-                <td className='text-left'>合計</td>
-                <td>149,600</td>
+                <td className='text-left'>合計 (税込)</td>
+                <td>¥{(total + 520).toLocaleString()}</td>
               </tr>
             </tbody>
           </table>
