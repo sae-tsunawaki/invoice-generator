@@ -6,11 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "lint": "next lint"
   },
-  "homepage": "https://sae-tsunawaki.github.io/",
   "dependencies": {
     "@react-pdf/renderer": "^3.1.14",
     "canvg": "^4.0.1",
