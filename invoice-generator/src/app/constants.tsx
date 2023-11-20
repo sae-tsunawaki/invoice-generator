@@ -1,17 +1,9 @@
 export const products = [
     ['竹目薬', 1200],
-    ['Product B', 200],
-    ['Product C', 300],
-    ['Product D', 400],
-    ['Product E', 500],
-    ['Product F', 600],
+    ['スーパーソマチッド', 6600],
+    ['スーパーケイ素溶液水', 8800],
+    ['イムノアルファ', 9000],
+    ['玄米黒焼き粉', 2500],
+    ['梅干し黒焼き粉', 3000],
+    ['活晶力', 4500],
 ];
-
-// export const products = {
-//     'Product A': 20, 
-//     'Product B': 30,
-//     'Product C': 40,
-//     'Product D': 50,
-//     'Product E': 80,
-//     'Product F': 100,
-// }
