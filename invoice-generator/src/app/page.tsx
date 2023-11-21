@@ -19,7 +19,7 @@ export default function Home() {
   const [orderList, setOrderList] = useState<any[]>([]);
   const [name, setName] = useState("");
   const [total, setTotal] = useState(0);
-  const [hover, setHover] = useState(false);
+  const [shipping, setShipping] = useState(0);
   registerLocale('ja', ja);
 
   useEffect(() => {
@@ -44,9 +44,8 @@ export default function Home() {
   }
 
   const handleQuantChange = (e: ChangeEvent<HTMLTextAreaElement>, index: number) => {
-    console.log(orderList);
     const newQuantity = Number(e.target.value);
-    const newPrice = Number(products[index][1]) * newQuantity;
+    const newPrice = orderList[index].ppp * newQuantity;
   
     setOrderList(prevOrderList => {
       if (index >= prevOrderList.length) {
@@ -54,7 +53,7 @@ export default function Home() {
         const newOrderData: Order = {
           name: String(products[index][0]),
           quantity: newQuantity,
-          ppp: Number(products[index][1]),
+          ppp: orderList[index].ppp,
           price: newPrice,
         };
         return [...prevOrderList, newOrderData];
@@ -62,7 +61,7 @@ export default function Home() {
         // If the index is within the current length of orderList, update the existing order
         return prevOrderList.map((order, i) =>
           i === index
-            ? { ...order, quantity: newQuantity, ppp: Number(products[index][1]), price: newPrice }
+            ? { ...order, quantity: newQuantity, price: newPrice }
             : order
         );
       }
@@ -70,18 +69,16 @@ export default function Home() {
   };
 
   const handleProductChange = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
-    console.log(orderList);
     setOrderList((prevOrderList) => {
       const newProductName = e.target.value;
-      const newProduct = products.find(([name]) => name === newProductName);
-      const newPrice = newProduct?.[1] ? Number(newProduct[1]) * Number(prevOrderList[index]?.quantity || 0) : 0;
+      const newPrice = Number(orderList[index].ppp) * Number(prevOrderList[index]?.quantity || 0);
   
       if (index >= prevOrderList.length) {
         // If the index is beyond the current length of orderList, add a new order
         const newOrderData: Order = {
           name: newProductName,
           quantity: 0,
-          ppp: Number(newProduct?.[1]),
+          ppp: orderList[index].ppp,
           price: newPrice,
         };
         return [...prevOrderList, newOrderData];
@@ -89,23 +86,44 @@ export default function Home() {
         // If the index is within the current length of orderList, update the existing order
         return prevOrderList.map((order, i) =>
           i === index
-            ? { ...order, name: newProductName, ppp: Number(newProduct?.[1]), price: newPrice }
+            ? { ...order, name: newProductName, price: newPrice }
             : order
         );
       }
     });
   };
 
-  const handleDeleteOrder = (index: number) => {
-    setOrderList((prevOrderList) => {
-      // Create a new array without the item at the specified index
-      const updatedOrderList = [...prevOrderList.slice(0, index), ...prevOrderList.slice(index + 1)];
-      return updatedOrderList;
+  const handlePPPChange = (e : ChangeEvent<HTMLTextAreaElement>, index : number) => {
+    const newProductPrice = Number(e.target.value);
+    const newPrice = newProductPrice * orderList[index].quantity;
+  
+    setOrderList(prevOrderList => {
+      if (index >= prevOrderList.length) {
+        // If the index is beyond the current length of orderList, add a new order
+        const newOrderData: Order = {
+          name: String(products[index][0]),
+          quantity: 0,
+          ppp: newProductPrice,
+          price: newPrice,
+        };
+        return [...prevOrderList, newOrderData];
+      } else {
+        // If the index is within the current length of orderList, update the existing order
+        return prevOrderList.map((order, i) =>
+          i === index
+            ? { ...order, ppp: newProductPrice, price: newPrice }
+            : order
+        );
+      }
     });
-  };
+  }
 
   const handleNameChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setName(e.target.value);
+  }
+
+  const handleShippingChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setShipping(Number(e.target.value));
   }
 
   return (
@@ -119,6 +137,11 @@ export default function Home() {
           className='w-full focus:outline-none border border-gray-300 resize-none px-2 py-2 rounded-md'
           rows={1}
           onChange={handleNameChange}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+            }
+          }}
         />
       </div>
       <div className='pt-4'>
@@ -131,9 +154,28 @@ export default function Home() {
           locale='ja'
         />
       </div>
+      <div className='pt-4'>
+        <div className='pb-2'>送料</div>
+        <div className="flex items-center">
+          <textarea
+            className='w-[15%] focus:outline-none border border-gray-300 resize-none px-2 py-2 rounded-md'
+            rows={1}
+            onChange={handleShippingChange}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+              }
+            }}
+          />
+          <span className='text-base pl-2'>円</span>
+        </div>
+      </div>
       <div className='flex w-full bg-[#00264D] text-white px-2 py-2 rounded-md mt-8 mb-2 space-x-4'>
-        <div className='w-[77%]'>
+        <div className='w-[55%]'>
           品名
+        </div>
+        <div className='w-[16%]'>
+          単価
         </div>
         <div className='w-[10%]'>
           数量
@@ -144,15 +186,8 @@ export default function Home() {
       </div>
       {
         orderList.map((order, index) => (
-          <div key={index} className='flex items-center space-x-4 w-full pr-1 pb-2' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-            {
-              hover ? ( null
-                // <div onClick={() => handleDeleteOrder(index)}>
-                //   <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                // </div>
-              )
-              : (null)}
-            <select onChange={(event) => handleProductChange(event, index)} className='focus:outline-none border border-gray-300 px-2 py-2 w-[77%] rounded-md'>
+          <div key={index} className='flex items-center w-full pr-1 pb-2'>
+            <select onChange={(event) => handleProductChange(event, index)} className='focus:outline-none border border-gray-300 px-2 py-2 w-[55%] rounded-md'>
               {
                 products.map((product, index) => (
                   <option key={index} value={product[0]}>{product[0]}</option>
@@ -160,7 +195,18 @@ export default function Home() {
               }
             </select>
             <textarea 
-              className='w-[10%] rounded-md focus:outline-none border border-gray-300 resize-none px-2 py-2'
+              className='w-[13%] rounded-md focus:outline-none border border-gray-300 resize-none px-2 py-2 ml-4'
+              rows={1}
+              onChange={(event) => handlePPPChange(event, index)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                }
+              }}
+            />
+            <span className='ml-1'>円</span>
+            <textarea 
+              className='w-[10%] rounded-md focus:outline-none border border-gray-300 resize-none px-2 py-2 ml-4'
               rows={1}
               onChange={(event) => handleQuantChange(event, index)}
               onKeyDown={(event) => {
@@ -170,7 +216,7 @@ export default function Home() {
               }}
             />
             {orderList && orderList[index] && (
-              <div>
+              <div className='ml-4'>
                 {orderList[index].price ? `¥${orderList[index].price}` : "¥0"}
               </div>
             )}
@@ -189,7 +235,7 @@ export default function Home() {
         </button>
       </div>
       <div className='hidden'>
-        <MyDocument name={name} date={date} total={total} orderList={orderList}/>
+        <MyDocument name={name} date={date} total={total} shipping={shipping} orderList={orderList}/>
       </div>
     </div>
   )

@@ -1,11 +1,11 @@
 import domtoimage from 'dom-to-image';
 import jsPDF from 'jspdf';
-import { products } from './constants';
 
 type Props = {
   name: string,
   date: any,
   total: number,
+  shipping: number,
   orderList: any[],
 };
   
@@ -21,7 +21,7 @@ export const pdhDownloadHandler = async () => {
       doc.save('invoice.pdf');
   })
 };
-export const MyDocument = ({name, date, total, orderList} : Props) => {
+export const MyDocument = ({name, date, total, shipping, orderList} : Props) => {
 
   const options = {
     year: 'numeric',
@@ -105,11 +105,11 @@ export const MyDocument = ({name, date, total, orderList} : Props) => {
               </tr>
               <tr>
                 <td className='text-left'>送料</td>
-                <td>¥520</td>
+                <td>¥{shipping}</td>
               </tr>
               <tr>
                 <td className='text-left'>合計 (税込)</td>
-                <td>¥{(total + 520).toLocaleString()}</td>
+                <td>¥{(total + shipping).toLocaleString()}</td>
               </tr>
             </tbody>
           </table>
