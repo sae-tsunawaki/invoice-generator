@@ -57,7 +57,7 @@ export const MyDocument = ({name, date, total, shipping, orderList} : Props) => 
                 </div>
               </div>
               <div className='text-xl font-semibold pl-6'>
-                ¥ {total.toLocaleString()}
+                ¥ {(total + shipping).toLocaleString()}
               </div>
             </div>
             <hr className="mx-16 border-[#0d918f] w-[187px] ml-48 -mt-2" />
